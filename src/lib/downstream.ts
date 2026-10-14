@@ -1,6 +1,6 @@
 import { API_CONFIG, ApiSite, getConfig } from '@/lib/config';
 import { SearchResult } from '@/lib/types';
-import { cleanHtmlTags } from '@/lib/utils';
+import { cleanHtmlTags, proxyPosterUrl } from '@/lib/utils';
 
 interface ApiSearchItem {
   vod_id: string;
@@ -76,7 +76,7 @@ export async function searchFromApi(
       return {
         id: item.vod_id.toString(),
         title: item.vod_name.trim().replace(/\s+/g, ' '),
-        poster: item.vod_pic,
+        poster: proxyPosterUrl(item.vod_pic),
         episodes,
         source: apiSite.key,
         source_name: apiName,
@@ -103,6 +103,7 @@ export async function searchFromApi(
       const additionalPagePromises = [];
 
       for (let page = 2; page <= pagesToFetch + 1; page++) {
+
         const pageUrl =
           apiBaseUrl +
           API_CONFIG.search.pagePath
@@ -149,7 +150,7 @@ export async function searchFromApi(
               return {
                 id: item.vod_id.toString(),
                 title: item.vod_name.trim().replace(/\s+/g, ' '),
-                poster: item.vod_pic,
+                poster: proxyPosterUrl(item.vod_pic),
                 episodes,
                 source: apiSite.key,
                 source_name: apiName,
@@ -255,7 +256,7 @@ export async function getDetailFromApi(
   return {
     id: id.toString(),
     title: videoDetail.vod_name,
-    poster: videoDetail.vod_pic,
+    poster: proxyPosterUrl(videoDetail.vod_pic),
     episodes,
     source: apiSite.key,
     source_name: apiSite.name,
@@ -331,7 +332,7 @@ async function handleSpecialSourceDetail(
   return {
     id,
     title: titleText,
-    poster: coverUrl,
+    poster: proxyPosterUrl(coverUrl),
     episodes: matches,
     source: apiSite.key,
     source_name: apiSite.name,
