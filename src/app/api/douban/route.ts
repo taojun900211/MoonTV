@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { getCacheTime } from '@/lib/config';
 import { DoubanItem, DoubanResult } from '@/lib/types';
+import { proxyPosterUrl } from '@/lib/utils';
 
 interface DoubanApiResponse {
   subjects: Array<{
@@ -98,7 +99,7 @@ export async function GET(request: Request) {
     const list: DoubanItem[] = doubanData.subjects.map((item) => ({
       id: item.id,
       title: item.title,
-      poster: item.cover,
+      poster: proxyPosterUrl(item.cover),
       rate: item.rate,
       year: '',
     }));
@@ -172,7 +173,7 @@ function handleTop250(pageStart: number) {
         movies.push({
           id: id,
           title: title,
-          poster: processedCover,
+          poster: proxyPosterUrl(processedCover),
           rate: rate,
           year: '',
         });
